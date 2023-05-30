@@ -7,21 +7,31 @@
 
     <fragment
         android:id="@+id/gameDetailsFragment"
-        android:name="com.earl.steamapi.presentation.gameDetails.GameDetailsFragment"
+        android:name="com.earl.steamapi.presentation.gameNews.GameNewsFragment"
         tools:layout="@layout/fragment_game_details_screen"
-        android:label="GameDetailsFragment"
-        />
+        android:label="GameDetailsFragment">
+        <argument
+            android:name="appid"
+            app:argType="integer" />
+        <argument
+            android:name="appname"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/steamGamesFragment"
         android:name="com.earl.steamapi.presentation.steamGames.SteamGamesFragment"
         android:label="SteamGamesFragment"
         tools:layout="@layout/fragment_steam_games_screen"
-        />
+        >
+        <action
+            android:id="@+id/action_steamGamesFragment_to_gameDetailsFragment"
+            app:destination="@id/gameDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/gameNewsFragment"
-        android:name="com.earl.steamapi.presentation.gameNews.GameNewsFragment"
+        android:name="com.earl.steamapi.presentation.newsDetails.NewsDetailsFragment"
         android:label="GameNewsFragment"
         tools:layout="@layout/fragment_game_news_screen"
         />
