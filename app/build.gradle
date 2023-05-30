@@ -65,4 +65,12 @@ dependencies {
     testImplementation TestDependencies.ioMockito
     testImplementation TestDependencies.kotlinMockito
     testImplementation TestDependencies.coroutinesTests
+
+    // lifecycle
+    implementation LifecycleComponents.coroutines
+    implementation LifecycleComponents.viewModel
+    implementation LifecycleComponents.fragment
+    implementation LifecycleComponents.lifecycleRuntime
+    implementation LifecycleComponents.serialization
+
 }

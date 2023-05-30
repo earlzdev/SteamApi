@@ -10,13 +10,13 @@ import dagger.Provides
 @Module
 class AppMainModule {
 
-    @Provides
+    @[AppScope Provides]
     fun provideRepository(
-        networkService: NetworkService
+        networkService: NetworkService,
     ): Repository = RepositoryImpl(
-        networkService
+        networkService,
     )
 
-    @Provides
+    @[AppScope Provides]
     fun networkService(): NetworkService = buildNetworkService()
 }
