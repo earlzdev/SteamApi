@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.earl.steamapi.di.AppScope
 import com.earl.steamapi.domain.Repository
 import com.earl.steamapi.domain.SteamApiResponse
+import com.earl.steamapi.domain.models.AppList
 import com.earl.steamapi.domain.models.SteamGame
 import com.earl.steamapi.domain.models.SteamGameResponse
 import com.earl.steamapi.presentation.utils.BaseViewModel
@@ -42,6 +43,7 @@ class SteamGamesViewModel(
                 it.appid.toString().contains(text) || it.name.contains(text)
             }
             readyList.invoke(newList)
+            _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(newList)))
         } catch (e: Exception) {
             e.printStackTrace()
         }
