@@ -6,32 +6,34 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import com.earl.steamapi.R
-import com.earl.steamapi.databinding.FragmentGameDetailsScreenBinding
+import com.earl.steamapi.databinding.FragmentGameNewsScreenBinding
 import com.earl.steamapi.di.AppComponentViewModel
 import com.earl.steamapi.domain.SteamApiResponse
 import com.earl.steamapi.domain.models.GameNewsDetails
 import com.earl.steamapi.presentation.utils.*
 import javax.inject.Inject
 
-class GameNewsFragment: BaseFragment<FragmentGameDetailsScreenBinding>(),
+class GameNewsFragment: BaseFragment<FragmentGameNewsScreenBinding>(),
     OnGameNewsClickListener, CoroutinesErrorHandler {
 
     @Inject
     internal lateinit var gameDetailsViewModelFactory: dagger.Lazy<GameNewsViewModel.Factory>
 
-    private val viewModel: GameNewsViewModel by viewModels {
+    private val viewModel: GameNewsViewModel by activityViewModels {
         gameDetailsViewModelFactory.get()
     }
 
     override fun viewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-    ) = FragmentGameDetailsScreenBinding.inflate(inflater, container, false)
+    ) = FragmentGameNewsScreenBinding.inflate(inflater, container, false)
 
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<AppComponentViewModel>()
@@ -84,7 +86,7 @@ class GameNewsFragment: BaseFragment<FragmentGameDetailsScreenBinding>(),
     }
 
     override fun onGameNewsClick(item: GameNewsDetails) {
-
+        findNavController().navigate(R.id.action_gameDetailsFragment_to_gameNewsFragment, bundleOf(NavArgsKeys.newsId to item.gid))
     }
 
     override fun onError(message: String) {

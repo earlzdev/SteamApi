@@ -1,14 +1,11 @@
 package com.earl.steamapi.presentation.gameNews
 
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import android.util.Log
+import androidx.lifecycle.*
 import com.earl.steamapi.di.AppScope
 import com.earl.steamapi.domain.Repository
 import com.earl.steamapi.domain.SteamApiResponse
-import com.earl.steamapi.domain.models.AppNews
+import com.earl.steamapi.domain.models.GameNewsDetails
 import com.earl.steamapi.domain.models.GameNewsResponse
 import com.earl.steamapi.presentation.utils.BaseViewModel
 import com.earl.steamapi.presentation.utils.CoroutinesErrorHandler
@@ -31,6 +28,15 @@ class GameNewsViewModel @Inject constructor(
     fun observeGameNewsLiveData(owner: LifecycleOwner, observer: Observer<SteamApiResponse<GameNewsResponse>>) {
         gameNewsLiveData.observe(owner, observer)
     }
+
+    fun findNewsById(id: String): GameNewsDetails? = try {
+        val responseList = gameNewsLiveData.value as SteamApiResponse.Success
+        responseList.data.appnews.newsitems.find { it.gid == id }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+
 
     @AppScope
     class Factory @Inject constructor(
