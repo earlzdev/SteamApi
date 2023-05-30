@@ -2,13 +2,11 @@ package com.earl.steamapi.presentation.gameNews
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
@@ -61,12 +59,7 @@ class GameNewsFragment: BaseFragment<FragmentGameNewsScreenBinding>(),
         viewModel.observeGameNewsLiveData(this) { response ->
             when(response) {
                 is SteamApiResponse.Success -> {
-                    if (response.data.appnews.newsitems.isEmpty()) {
-                        binding.emotyList.visibility = View.VISIBLE
-                    } else {
-                        binding.emotyList.visibility = View.GONE
-                        adapter.submitList(response.data.appnews.newsitems)
-                    }
+                    adapter.submitList(response.data.appnews.newsitems)
                     binding.progressBar.visibility = View.GONE
                     binding.newsRecycler.visibility = View.VISIBLE
                 }
@@ -74,10 +67,8 @@ class GameNewsFragment: BaseFragment<FragmentGameNewsScreenBinding>(),
                     showErrorAlertDialog(requireContext(), response.errorMessage)
                     binding.progressBar.visibility = View.GONE
                     binding.newsRecycler.visibility = View.VISIBLE
-                    binding.emotyList.visibility = View.GONE
                 }
                 SteamApiResponse.Loading -> {
-                    binding.emotyList.visibility = View.GONE
                     binding.progressBar.visibility = View.VISIBLE
                     binding.newsRecycler.visibility = View.GONE
                 }
