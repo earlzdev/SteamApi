@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 open class BaseViewModel : ViewModel() {
     private var mJob: Job? = null
@@ -18,6 +19,20 @@ open class BaseViewModel : ViewModel() {
             request().collect {
                 withContext(Dispatchers.Main) {
                     liveData.value = it
+                }
+            }
+        }
+    }
+
+    protected fun <T> baseRequestWithFlow(flow: MutableStateFlow<T>, errorHandler: CoroutinesErrorHandler, request: () -> Flow<T>) {
+        mJob = viewModelScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, error ->
+            viewModelScope.launch(Dispatchers.Main) {
+                errorHandler.onError(error.localizedMessage ?: "Error occured! Please try again.")
+            }
+        }){
+            request().collect {
+                withContext(Dispatchers.Main) {
+                    flow.value = it
                 }
             }
         }
