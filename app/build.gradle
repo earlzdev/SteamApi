@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -30,15 +31,38 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation Dependencies.core
+    implementation Dependencies.appCompat
+    implementation Dependencies.material
+    implementation Dependencies.constraintLayout
+
+    // dagger2
+    implementation Dagger2.dagger
+    kapt Dagger2.daggerCompiler
+
+    // retrofit
+    implementation Retrofit.retrofit
+    implementation Retrofit.retrofitGsonConverter
+    implementation Retrofit.retrofitCoroutineAdapter
+    implementation Retrofit.okHttpLoggingInterceptor
+
+    // navComponent
+    implementation NavigationComponent.navComponentFragment
+    implementation NavigationComponent.navComponentUi
+
+    // tests
+    implementation TestDependencies.junit
+    implementation TestDependencies.androidJunit
+    implementation TestDependencies.androidEspresso
+    testImplementation TestDependencies.mockito
+    testImplementation TestDependencies.ioMockito
+    testImplementation TestDependencies.kotlinMockito
+    testImplementation TestDependencies.coroutinesTests
 }
