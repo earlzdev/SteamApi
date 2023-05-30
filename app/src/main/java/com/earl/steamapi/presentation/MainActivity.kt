@@ -1,7 +1,8 @@
-package com.earl.steamapi
+package com.earl.steamapi.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.earl.steamapi.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

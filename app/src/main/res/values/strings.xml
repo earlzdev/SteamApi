@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">SteamApi</string>
+    <string name="game_id_s">Game id: %s</string>
+    <string name="game_name_s">Game name: %s</string>
+    <string name="network_error">NetworkError</string>
+    <string name="okay">Okay</string>
+    <string name="details_of_game_s">News for game: %s</string>
+    <string name="header_s">Header: %s</string>
+    <string name="author_s">Author: %s</string>
+    <string name="feed_label_s">Feed label: %s</string>
+    <string name="title_s">Title: %s</string>
+    <string name="contents_s">Contents: %s</string>
+    <string name="look_on_website">Look on website:</string>
+    <string name="url"><b><u>url</u></b></string>
+    <string name="start_typing">Start typing...</string>
 </resources>

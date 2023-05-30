@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/steamGamesFragment">
+
+    <fragment
+        android:id="@+id/gameDetailsFragment"
+        android:name="com.earl.steamapi.presentation.gameNews.GameNewsFragment"
+        tools:layout="@layout/fragment_game_news_screen"
+        android:label="GameDetailsFragment">
+        <argument
+            android:name="appid"
+            app:argType="integer" />
+        <argument
+            android:name="appname"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_gameDetailsFragment_to_gameNewsFragment"
+            app:destination="@id/gameNewsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/steamGamesFragment"
+        android:name="com.earl.steamapi.presentation.steamGames.SteamGamesFragment"
+        android:label="SteamGamesFragment"
+        tools:layout="@layout/fragment_steam_games_screen"
+        >
+        <action
+            android:id="@+id/action_steamGamesFragment_to_gameDetailsFragment"
+            app:destination="@id/gameDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gameNewsFragment"
+        android:name="com.earl.steamapi.presentation.gameNews.NewsDetailsFragment"
+        android:label="GameNewsFragment"
+        tools:layout="@layout/fragment_news_details_screen"
+        >
+        <argument
+            android:name="newsid"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
