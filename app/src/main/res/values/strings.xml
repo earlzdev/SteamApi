@@ -12,4 +12,5 @@
     <string name="contents_s">Contents: %s</string>
     <string name="look_on_website">Look on website:</string>
     <string name="url"><b><u>url</u></b></string>
+    <string name="start_typing">Start typing...</string>
 </resources>

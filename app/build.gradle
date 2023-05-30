@@ -73,4 +73,6 @@ dependencies {
     implementation LifecycleComponents.lifecycleRuntime
     implementation LifecycleComponents.serialization
 
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
 }

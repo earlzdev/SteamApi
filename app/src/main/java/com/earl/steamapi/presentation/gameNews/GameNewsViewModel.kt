@@ -1,6 +1,5 @@
 package com.earl.steamapi.presentation.gameNews
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.earl.steamapi.di.AppScope
 import com.earl.steamapi.domain.Repository
@@ -9,6 +8,9 @@ import com.earl.steamapi.domain.models.GameNewsDetails
 import com.earl.steamapi.domain.models.GameNewsResponse
 import com.earl.steamapi.presentation.utils.BaseViewModel
 import com.earl.steamapi.presentation.utils.CoroutinesErrorHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -37,6 +39,16 @@ class GameNewsViewModel @Inject constructor(
         null
     }
 
+    fun refreshList(gameId: Int, refreshedCallback: () -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fetchNewsForApp(gameId).collect {
+                withContext(Dispatchers.Main) {
+                    gameNewsLiveData.value = it
+                }
+            }
+        }
+        refreshedCallback()
+    }
 
     @AppScope
     class Factory @Inject constructor(

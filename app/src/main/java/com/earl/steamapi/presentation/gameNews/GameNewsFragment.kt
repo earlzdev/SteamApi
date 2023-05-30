@@ -47,6 +47,11 @@ class GameNewsFragment: BaseFragment<FragmentGameNewsScreenBinding>(),
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.refreshLayout.setOnRefreshListener {
+            viewModel.refreshList(getAppId() ?: -1) {
+                binding.refreshLayout.isRefreshing = false
+            }
+        }
     }
 
     private fun initNewsForApp() {

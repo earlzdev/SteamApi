@@ -1,8 +1,7 @@
 package com.earl.steamapi.data.remoteDataSource
 
-import android.util.Log
-import com.earl.steamapi.domain.models.ErrorResponse
 import com.earl.steamapi.domain.SteamApiResponse
+import com.earl.steamapi.domain.models.ErrorResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +14,6 @@ fun<T> apiRequestFlow(call: suspend () -> Response<T>): Flow<SteamApiResponse<T>
     emit(SteamApiResponse.Loading)
     withTimeoutOrNull(20000L) {
         val response = call()
-        Log.d("tag", "apiRequestFlow: $response")
         try {
             if (response.isSuccessful) {
                 response.body()?.let { data ->

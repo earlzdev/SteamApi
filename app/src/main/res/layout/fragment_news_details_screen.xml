@@ -73,7 +73,6 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintTop_toTopOf="@id/look_on_website"
-            app:layout_constraintBottom_toBottomOf="@id/look_on_website"
             app:layout_constraintStart_toEndOf="@id/look_on_website"
             android:layout_marginStart="10dp"
             />
