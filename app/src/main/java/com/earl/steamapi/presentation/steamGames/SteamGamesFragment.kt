@@ -6,31 +6,31 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import androidx.navigation.fragment.findNavController
+import com.earl.steamapi.R
 import com.earl.steamapi.databinding.FragmentSteamGamesScreenBinding
 import com.earl.steamapi.di.AppComponentViewModel
 import com.earl.steamapi.domain.SteamApiResponse
 import com.earl.steamapi.domain.models.SteamGame
-import com.earl.steamapi.presentation.utils.BaseFragment
-import com.earl.steamapi.presentation.utils.CoroutinesErrorHandler
-import com.earl.steamapi.presentation.utils.OnGameClickListener
-import com.earl.steamapi.presentation.utils.SteamGamesRecyclerAdapter
+import com.earl.steamapi.presentation.utils.*
 import javax.inject.Inject
 
 class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGameClickListener, CoroutinesErrorHandler {
 
     @Inject
-    internal lateinit var searchAirportsViewModelFactory: dagger.Lazy<SteamGamesViewModel.Factory>
+    internal lateinit var steamGamesViewModelFactory: dagger.Lazy<SteamGamesViewModel.Factory>
 
     private val viewModel: SteamGamesViewModel by viewModels {
-        searchAirportsViewModelFactory.get()
+        steamGamesViewModelFactory.get()
     }
 
     override fun onAttach(context: Context) {
         ViewModelProvider(this).get<AppComponentViewModel>()
-            .newDetailsComponent.inject(this)
+            .appComponent.inject(this)
         super.onAttach(context)
     }
 
@@ -56,6 +56,7 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
                     binding.gamesRecycler.visibility = View.VISIBLE
                 }
                 is SteamApiResponse.Failure -> {
+                    showErrorAlertDialog(requireContext(), response.errorMessage)
                     binding.progressBar.visibility = View.GONE
                     binding.gamesRecycler.visibility = View.VISIBLE
                 }
@@ -68,10 +69,10 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
     }
 
     override fun onGameClick(item: SteamGame) {
-
+        findNavController().navigate(R.id.action_steamGamesFragment_to_gameDetailsFragment, bundleOf(NavArgsKeys.appId to item.appid, NavArgsKeys.appName to item.name))
     }
 
     override fun onError(message: String) {
-
+        showErrorAlertDialog(requireContext(), message)
     }
 }

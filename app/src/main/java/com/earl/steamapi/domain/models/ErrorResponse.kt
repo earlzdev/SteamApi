@@ -1,4 +1,4 @@
-package com.earl.steamapi.data.remoteDataSource
+package com.earl.steamapi.domain.models
 
 data class ErrorResponse(
     val code: Int,
