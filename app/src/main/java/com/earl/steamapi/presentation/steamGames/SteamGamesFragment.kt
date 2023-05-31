@@ -57,6 +57,9 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
         if (viewModel.steamGamesStateFlow.value !is SteamApiResponse.Success) {
             viewModel.getSteamGames(this)
         }
+        binding.searchEd.afterTextChangedDelayed {
+            viewModel.searchGamesByEnteredText(it)
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.steamGamesStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)

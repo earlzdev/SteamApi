@@ -23,6 +23,8 @@ class SteamGamesViewModel(
     private val _steamGamesStateFlow: MutableStateFlow<SteamApiResponse<SteamGameResponse>> = MutableStateFlow(SteamApiResponse.Loading)
     val steamGamesStateFlow: StateFlow<SteamApiResponse<SteamGameResponse>> = _steamGamesStateFlow.asStateFlow()
 
+    private var lastGamesList: List<SteamGame> = mutableListOf()
+
     fun getSteamGames(coroutinesErrorHandler: CoroutinesErrorHandler) = baseRequestWithFlow(
         _steamGamesStateFlow,
         coroutinesErrorHandler
@@ -30,25 +32,63 @@ class SteamGamesViewModel(
         repository.fetchAllSteamGames()
     }
 
+//    fun getSteamGames(coroutinesErrorHandler: CoroutinesErrorHandler) {
+//        _steamGamesStateFlow.value = SteamApiResponse.Success(
+//            SteamGameResponse(
+//                AppList(
+//                    listOf(
+//                        SteamGame(0, "name1"),
+//                        SteamGame(1, "name2"),
+//                        SteamGame(2, "name3"),
+//                        SteamGame(3, "name4"),
+//                        SteamGame(4, "name5"),
+//                        SteamGame(5, "name6"),
+//                        SteamGame(6, "name7"),
+//                        SteamGame(7, "name8"),
+//                        SteamGame(8, "name9"),
+//                    )
+//                )
+//            )
+//        )
+//    }
+
     fun refreshList(refreshedCallback: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             _steamGamesStateFlow.emitAll(repository.fetchAllSteamGames())
+//            _steamGamesStateFlow.value = SteamApiResponse.Success(
+//                SteamGameResponse(
+//                    AppList(
+//                        listOf(
+//                            SteamGame(0, "name1"),
+//                            SteamGame(1, "name2"),
+//                            SteamGame(2, "name3"),
+//                            SteamGame(3, "name4"),
+//                            SteamGame(4, "name5"),
+//                            SteamGame(5, "name6"),
+//                            SteamGame(6, "name7"),
+//                            SteamGame(7, "name8"),
+//                            SteamGame(8, "name9"),
+//                        )
+//                    )
+//                )
+//            )
         }
         refreshedCallback()
     }
 
-    fun searchGamesByEnteredText(text: String, readyList: (List<SteamGame>) -> Unit) {
+    fun searchGamesByEnteredText(text: String) {
         try {
             val list = _steamGamesStateFlow.value as SteamApiResponse.Success
             if (text.isNotBlank()) {
+                lastGamesList = list.data.applist.apps
                 val newList = list.data.applist.apps.filter {
                     it.appid.toString().contains(text) || it.name.contains(text)
                 }
-                readyList.invoke(newList)
                 Log.d("tag", "new list: ${newList.map { it.name }}")
+                _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(newList)))
             } else {
-                readyList.invoke(list.data.applist.apps)
                 Log.d("tag", "empty list -> ${list.data.applist.apps}")
+                _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(lastGamesList)))
             }
         } catch (e: Exception) {
             e.printStackTrace()
