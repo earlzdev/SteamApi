@@ -52,7 +52,7 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
     }
 
     private fun initGamesRecyclerAdapter() {
-        val adapter = SteamGamesRecyclerAdapter(this)
+        val adapter = SteamGamesRecycler(this)
         binding.gamesRecycler.adapter = adapter
         if (viewModel.steamGamesStateFlow.value !is SteamApiResponse.Success) {
             viewModel.getSteamGames(this)
@@ -67,7 +67,7 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
                     when(response) {
                         is SteamApiResponse.Success -> {
                             val newList = response.data.applist.apps
-                            adapter.submitList(newList)
+                            adapter.data = newList
                             binding.progressBar.visibility = View.GONE
                             binding.gamesRecycler.visibility = View.VISIBLE
                         }

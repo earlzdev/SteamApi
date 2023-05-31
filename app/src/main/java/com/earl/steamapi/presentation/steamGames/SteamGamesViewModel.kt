@@ -1,6 +1,5 @@
 package com.earl.steamapi.presentation.steamGames
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.earl.steamapi.di.AppScope
 import com.earl.steamapi.domain.Repository
@@ -32,46 +31,9 @@ class SteamGamesViewModel(
         repository.fetchAllSteamGames()
     }
 
-//    fun getSteamGames(coroutinesErrorHandler: CoroutinesErrorHandler) {
-//        _steamGamesStateFlow.value = SteamApiResponse.Success(
-//            SteamGameResponse(
-//                AppList(
-//                    listOf(
-//                        SteamGame(0, "name1"),
-//                        SteamGame(1, "name2"),
-//                        SteamGame(2, "name3"),
-//                        SteamGame(3, "name4"),
-//                        SteamGame(4, "name5"),
-//                        SteamGame(5, "name6"),
-//                        SteamGame(6, "name7"),
-//                        SteamGame(7, "name8"),
-//                        SteamGame(8, "name9"),
-//                    )
-//                )
-//            )
-//        )
-//    }
-
     fun refreshList(refreshedCallback: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             _steamGamesStateFlow.emitAll(repository.fetchAllSteamGames())
-//            _steamGamesStateFlow.value = SteamApiResponse.Success(
-//                SteamGameResponse(
-//                    AppList(
-//                        listOf(
-//                            SteamGame(0, "name1"),
-//                            SteamGame(1, "name2"),
-//                            SteamGame(2, "name3"),
-//                            SteamGame(3, "name4"),
-//                            SteamGame(4, "name5"),
-//                            SteamGame(5, "name6"),
-//                            SteamGame(6, "name7"),
-//                            SteamGame(7, "name8"),
-//                            SteamGame(8, "name9"),
-//                        )
-//                    )
-//                )
-//            )
         }
         refreshedCallback()
     }
@@ -84,15 +46,12 @@ class SteamGamesViewModel(
                 val newList = list.data.applist.apps.filter {
                     it.appid.toString().contains(text) || it.name.contains(text)
                 }
-                Log.d("tag", "new list: ${newList.map { it.name }}")
                 _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(newList)))
             } else {
-                Log.d("tag", "empty list -> ${list.data.applist.apps}")
                 _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(lastGamesList)))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d("tag", "searchGamesByEnteredText: eerro -> $$e")
         }
     }
 

@@ -1,6 +1,5 @@
 package com.earl.steamapi.data.remoteDataSource
 
-import com.earl.steamapi.domain.models.AppNews
 import com.earl.steamapi.domain.models.GameNewsResponse
 import com.earl.steamapi.domain.models.SteamGameResponse
 import retrofit2.Response

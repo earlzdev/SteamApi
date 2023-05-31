@@ -1,6 +1,5 @@
 package com.earl.steamapi.presentation.utils
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -15,39 +14,32 @@ interface OnGameClickListener {
     fun onGameClick(item: SteamGame)
 }
 
-class SteamGamesRecyclerAdapter(
+class SteamGamesRecycler(
     private val clickListener: OnGameClickListener
-): ListAdapter<SteamGame, SteamGamesRecyclerAdapter.SteamGameViewHolder>(Diff) {
+): RecyclerView.Adapter<SteamGamesRecycler.SteamGameHolder>() {
 
-    companion object Diff: DiffUtil.ItemCallback<SteamGame>() {
-        override fun areItemsTheSame(oldItem: SteamGame, newItem: SteamGame) = oldItem.same(newItem)
-        override fun areContentsTheSame(oldItem: SteamGame, newItem: SteamGame) = oldItem.equals(newItem)
-    }
+    var data: List<SteamGame> = emptyList()
+        set(newValue) {
+            field = newValue
+            notifyDataSetChanged()
+        }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SteamGameViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SteamGameHolder {
         val binding = RecyclerGameItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SteamGameViewHolder(binding)
+        return SteamGameHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: SteamGameViewHolder, position: Int) {
-        val item = getItem(position)
+    override fun onBindViewHolder(holder: SteamGameHolder, position: Int) {
+        val item = data[position]
         holder.bind(item)
         holder.itemView.setOnClickListener {
             clickListener.onGameClick(item)
         }
     }
 
-    fun filterList(text: String) {
-        val newList = currentList.filter {
-            it.appid.toString().contains(text) || it.name.contains(text)
-        }
-        Log.d("tag", "filterList: new list in adapter -> $newList")
-        submitList(emptyList())
-        submitList(newList)
-        notifyDataSetChanged()
-    }
+    override fun getItemCount() = data.size
 
-    class SteamGameViewHolder(private val binding: RecyclerGameItemBinding): RecyclerView.ViewHolder(binding.root) {
+    class SteamGameHolder(private val binding: RecyclerGameItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: SteamGame) {
             val context = binding.gameId.context
             binding.gameId.text = String.format(context.getString(R.string.game_id_s), item.appid)
