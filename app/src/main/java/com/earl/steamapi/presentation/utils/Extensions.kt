@@ -8,6 +8,7 @@ import android.widget.EditText
 object Extensions {
 
     fun EditText.afterTextChangedDelayed(afterTextChanged: (String) -> Unit) {
+        var lastLength = 0
         this.addTextChangedListener(object : TextWatcher {
             var timer: CountDownTimer? = null
 
@@ -20,6 +21,7 @@ object Extensions {
                 timer = object : CountDownTimer(500, 1500) {
                     override fun onTick(millisUntilFinished: Long) {}
                     override fun onFinish() {
+
                         afterTextChanged.invoke(editable.toString())
                     }
                 }.start()

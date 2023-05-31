@@ -11,6 +11,10 @@
     <string name="title_s">Title: %s</string>
     <string name="contents_s">Contents: %s</string>
     <string name="look_on_website">Look on website:</string>
-    <string name="url"><b><u>url</u></b></string>
-    <string name="start_typing">Start typing...</string>
+    <string name="url"><b><u>Click</u></b></string>
+    <string name="start_typing">Start typing for search...</string>
+    <string name="no_news_for_this_app">No news for this app</string>
+    <string name="last_news">Last news:</string>
+    <string name="no_title">No title</string>
+    <string name="here_are_all_games_on_steam">Here are all games on steam:</string>
 </resources>

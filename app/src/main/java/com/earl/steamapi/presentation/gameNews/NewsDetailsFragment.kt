@@ -1,6 +1,8 @@
 package com.earl.steamapi.presentation.gameNews
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -51,8 +53,11 @@ class NewsDetailsFragment: BaseFragment<FragmentNewsDetailsScreenBinding>() {
     private fun initNewsDetails() {
         viewModel.findNewsById(getNewsId() ?: "")?.let { newsDetails ->
             binding.contents.text = String.format(requireContext().getString(R.string.contents_s), newsDetails.contents)
-            binding.url.text = newsDetails.url
             binding.newsHeader.text = String.format(requireContext().getString(R.string.title_s), newsDetails.title)
+            binding.url.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(newsDetails.url))
+                startActivity(intent)
+            }
         }
     }
 

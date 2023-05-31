@@ -15,7 +15,7 @@
             android:id="@+id/header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Here are all games on steam:"
+            android:text="@string/here_are_all_games_on_steam"
             android:fontFamily="@font/montserrat_medium"
             android:textSize="16sp"
             android:textColor="@color/black"

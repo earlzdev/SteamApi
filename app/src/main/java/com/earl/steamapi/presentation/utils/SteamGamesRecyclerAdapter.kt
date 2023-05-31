@@ -1,5 +1,6 @@
 package com.earl.steamapi.presentation.utils
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,7 +19,7 @@ class SteamGamesRecyclerAdapter(
     private val clickListener: OnGameClickListener
 ): ListAdapter<SteamGame, SteamGamesRecyclerAdapter.SteamGameViewHolder>(Diff) {
 
-    private companion object Diff: DiffUtil.ItemCallback<SteamGame>() {
+    companion object Diff: DiffUtil.ItemCallback<SteamGame>() {
         override fun areItemsTheSame(oldItem: SteamGame, newItem: SteamGame) = oldItem.same(newItem)
         override fun areContentsTheSame(oldItem: SteamGame, newItem: SteamGame) = oldItem.equals(newItem)
     }
@@ -34,6 +35,16 @@ class SteamGamesRecyclerAdapter(
         holder.itemView.setOnClickListener {
             clickListener.onGameClick(item)
         }
+    }
+
+    fun filterList(text: String) {
+        val newList = currentList.filter {
+            it.appid.toString().contains(text) || it.name.contains(text)
+        }
+        Log.d("tag", "filterList: new list in adapter -> $newList")
+        submitList(emptyList())
+        submitList(newList)
+        notifyDataSetChanged()
     }
 
     class SteamGameViewHolder(private val binding: RecyclerGameItemBinding): RecyclerView.ViewHolder(binding.root) {

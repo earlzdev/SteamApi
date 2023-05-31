@@ -59,25 +59,36 @@ class GameNewsFragment: BaseFragment<FragmentGameNewsScreenBinding>(),
         viewModel.observeGameNewsLiveData(this) { response ->
             when(response) {
                 is SteamApiResponse.Success -> {
-                    adapter.submitList(response.data.appnews.newsitems)
-                    binding.progressBar.visibility = View.GONE
-                    binding.newsRecycler.visibility = View.VISIBLE
+                    val list = response.data.appnews.newsitems
+                    if (list.isEmpty()) {
+                        binding.progressBar.visibility = View.GONE
+                        binding.emptyNewsList.visibility = View.VISIBLE
+                    } else {
+                        binding.progressBar.visibility = View.GONE
+                        binding.emptyNewsList.visibility = View.GONE
+                        binding.newsRecycler.visibility = View.VISIBLE
+                        adapter.submitList(response.data.appnews.newsitems)
+                    }
                 }
                 is SteamApiResponse.Failure -> {
-                    showErrorAlertDialog(requireContext(), response.errorMessage)
                     binding.progressBar.visibility = View.GONE
-                    binding.newsRecycler.visibility = View.VISIBLE
+                    binding.newsRecycler.visibility = View.GONE
+                    binding.emptyNewsList.visibility = View.VISIBLE
                 }
                 SteamApiResponse.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
                     binding.newsRecycler.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.emptyNewsList.visibility = View.GONE
                 }
             }
         }
     }
 
     private fun getAppId() = arguments?.let {
-        binding.header.text = String.format(requireContext().getString(R.string.details_of_game_s), it.getString(NavArgsKeys.appName))
+        binding.header.text = String.format(
+            requireContext().getString(R.string.details_of_game_s),
+            it.getString(NavArgsKeys.appName) ?: getString(R.string.no_title)
+        )
         it.getInt(NavArgsKeys.appId)
     }
 
@@ -86,6 +97,6 @@ class GameNewsFragment: BaseFragment<FragmentGameNewsScreenBinding>(),
     }
 
     override fun onError(message: String) {
-        showErrorAlertDialog(requireContext(), message)
+        showErrorAlertDialog(requireContext(), message).show()
     }
 }

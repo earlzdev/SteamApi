@@ -1,5 +1,6 @@
 package com.earl.steamapi.presentation.steamGames
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.earl.steamapi.di.AppScope
 import com.earl.steamapi.domain.Repository
@@ -39,13 +40,19 @@ class SteamGamesViewModel(
     fun searchGamesByEnteredText(text: String, readyList: (List<SteamGame>) -> Unit) {
         try {
             val list = _steamGamesStateFlow.value as SteamApiResponse.Success
-            val newList = list.data.applist.apps.filter {
-                it.appid.toString().contains(text) || it.name.contains(text)
+            if (text.isNotBlank()) {
+                val newList = list.data.applist.apps.filter {
+                    it.appid.toString().contains(text) || it.name.contains(text)
+                }
+                readyList.invoke(newList)
+                Log.d("tag", "new list: ${newList.map { it.name }}")
+            } else {
+                readyList.invoke(list.data.applist.apps)
+                Log.d("tag", "empty list -> ${list.data.applist.apps}")
             }
-            readyList.invoke(newList)
-            _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(newList)))
         } catch (e: Exception) {
             e.printStackTrace()
+            Log.d("tag", "searchGamesByEnteredText: eerro -> $$e")
         }
     }
 
