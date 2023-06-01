@@ -4,11 +4,11 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import com.earl.steamapi.domain.models.SteamGame
 
 object Extensions {
 
     fun EditText.afterTextChangedDelayed(afterTextChanged: (String) -> Unit) {
-        var lastLength = 0
         this.addTextChangedListener(object : TextWatcher {
             var timer: CountDownTimer? = null
 
@@ -28,4 +28,17 @@ object Extensions {
             }
         })
     }
+
+    fun List<SteamGame>.filterByText(text: String): List<SteamGame> {
+        return if (text != "") {
+            val textToSearch = text.lowercase()
+            this.filter {
+                it.appid.toString().lowercase().contains(textToSearch) || it.name.lowercase().contains(textToSearch) ||
+                        it.appid.toString().lowercase().startsWith(textToSearch) || it.name.lowercase().startsWith(textToSearch)
+            }
+        } else {
+            this
+        }
+    }
+
 }

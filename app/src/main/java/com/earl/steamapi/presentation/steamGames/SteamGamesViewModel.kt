@@ -9,6 +9,7 @@ import com.earl.steamapi.domain.models.SteamGame
 import com.earl.steamapi.domain.models.SteamGameResponse
 import com.earl.steamapi.presentation.utils.BaseViewModel
 import com.earl.steamapi.presentation.utils.CoroutinesErrorHandler
+import com.earl.steamapi.presentation.utils.Extensions.filterByText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class SteamGamesViewModel(
     val steamGamesStateFlow: StateFlow<SteamApiResponse<SteamGameResponse>> = _steamGamesStateFlow.asStateFlow()
 
     private var lastGamesList: List<SteamGame> = mutableListOf()
+    private var lastSearchedText = ""
 
     fun getSteamGames(coroutinesErrorHandler: CoroutinesErrorHandler) = baseRequestWithFlow(
         _steamGamesStateFlow,
@@ -41,19 +43,23 @@ class SteamGamesViewModel(
     fun searchGamesByEnteredText(text: String) {
         try {
             val list = _steamGamesStateFlow.value as SteamApiResponse.Success
-            if (text.isNotBlank()) {
+            if (text.isNotBlank() && lastSearchedText == "") {
                 lastGamesList = list.data.applist.apps
-                val newList = list.data.applist.apps.filter {
-                    it.appid.toString().contains(text) || it.name.contains(text)
-                }
+                lastSearchedText = text
+                val newList = list.data.applist.apps.filterByText(text)
                 _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(newList)))
-            } else {
+            } else if (text.isNotBlank()) {
+                val newList = lastGamesList.filterByText(text)
+                _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(newList)))
+            } else if (lastSearchedText.length > 1 && text.isEmpty()) {
+                lastSearchedText = ""
                 _steamGamesStateFlow.value = SteamApiResponse.Success(SteamGameResponse(AppList(lastGamesList)))
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
 
     @AppScope
     class Factory @Inject constructor(

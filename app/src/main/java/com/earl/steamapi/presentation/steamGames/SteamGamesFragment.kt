@@ -2,7 +2,6 @@ package com.earl.steamapi.presentation.steamGames
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import com.earl.steamapi.domain.SteamApiResponse
 import com.earl.steamapi.domain.models.SteamGame
 import com.earl.steamapi.presentation.utils.*
 import com.earl.steamapi.presentation.utils.Extensions.afterTextChangedDelayed
+import com.earl.steamapi.presentation.utils.Extensions.filterByText
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,7 +58,7 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
             viewModel.getSteamGames(this)
         }
         binding.searchEd.afterTextChangedDelayed {
-            viewModel.searchGamesByEnteredText(it)
+            viewModel.searchGamesByEnteredText(it.trim())
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.steamGamesStateFlow
@@ -67,7 +67,7 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
                     when(response) {
                         is SteamApiResponse.Success -> {
                             val newList = response.data.applist.apps
-                            adapter.data = newList
+                            adapter.data = newList.filterByText(binding.searchEd.text.toString())
                             binding.progressBar.visibility = View.GONE
                             binding.gamesRecycler.visibility = View.VISIBLE
                         }
@@ -83,22 +83,22 @@ class SteamGamesFragment: BaseFragment<FragmentSteamGamesScreenBinding>(), OnGam
                     }
                 }
         }
-    binding.gamesRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            super.onScrollStateChanged(recyclerView, newState)
-            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                KeyboardUtils.forceCloseKeyboard(requireView())
+        binding.gamesRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    KeyboardUtils.forceCloseKeyboard(requireView())
+                }
             }
-        }
-    })
-}
+        })
+    }
 
-override fun onGameClick(item: SteamGame) {
-    findNavController().navigate(R.id.action_steamGamesFragment_to_gameDetailsFragment,
-        bundleOf(NavArgsKeys.appId to item.appid, NavArgsKeys.appName to item.name))
-}
+    override fun onGameClick(item: SteamGame) {
+        findNavController().navigate(R.id.action_steamGamesFragment_to_gameDetailsFragment,
+            bundleOf(NavArgsKeys.appId to item.appid, NavArgsKeys.appName to item.name))
+    }
 
-override fun onError(message: String) {
-    showErrorAlertDialog(requireContext(), message).show()
-}
+    override fun onError(message: String) {
+        showErrorAlertDialog(requireContext(), message).show()
+    }
 }
